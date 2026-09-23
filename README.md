@@ -1,4 +1,4 @@
-# VR Assistant
+# Virtual Interactive Assistant 3D (VIA-3D)
 
 A desktop VRM avatar assistant that listens to your voice, replies through
 the Google Gemini API, and reflects emotion through facial expressions and
