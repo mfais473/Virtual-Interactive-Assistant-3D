@@ -1,0 +1,19 @@
+{
+  "name": "Virtual Interactive Assistant 3D",
+  "version": "0.1.0",
+  "description": "Desktop VRM avatar assistant with Gemini voice interaction.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@google/genai": "^0.14.0",
+    "@pixiv/three-vrm": "^2.1.2",
+    "@pixiv/three-vrm-animation": "^2.1.2",
+    "dotenv": "^16.4.5",
+    "three": "^0.164.1"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}

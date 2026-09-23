@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>VR Assistant</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      /* Supaya jendela tanpa title bar ini tetap bisa digeser -- klik & tahan
+         di area kosong (bukan tombol) untuk memindahkan posisinya di layar. */
+      -webkit-app-region: drag;
+    }
+    canvas { display: block; }
+  </style>
+  <!-- Import map: memberi tahu browser ke mana 'three' dan '@pixiv/three-vrm'
+       harus di-resolve, karena tanpa ini bare specifier seperti import ... from 'three'
+       tidak bisa dipahami browser (beda dengan Node.js/bundler). -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./node_modules/three/build/three.module.js",
+        "three/examples/jsm/loaders/GLTFLoader.js": "./node_modules/three/examples/jsm/loaders/GLTFLoader.js",
+        "@pixiv/three-vrm": "./node_modules/@pixiv/three-vrm/lib/three-vrm.module.js",
+        "@pixiv/three-vrm-animation": "./node_modules/@pixiv/three-vrm-animation/lib/three-vrm-animation.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- micSelect disembunyikan (bukan dihapus) -- tetap dipakai kode untuk
+       mendeteksi & memilih device mic secara otomatis, tanpa tampil di layar -->
+  <select id="micSelect" style="display:none;"></select>
+  <script type="module" src="src/renderer.js"></script>
+</body>
+</html>

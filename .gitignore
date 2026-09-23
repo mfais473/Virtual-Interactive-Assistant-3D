@@ -1,0 +1,65 @@
+# ==============================
+# Environment & secrets
+# ==============================
+.env
+.env.local
+.env.*.local
+
+# ==============================
+# Avatar & animation assets
+# (tidak diredistribusikan — lihat assets/avatar/README.md)
+# ==============================
+# Abaikan semua file model di folder ini...
+assets/*.vrm
+assets/*.vrma
+
+# ...kecuali file README yang menjelaskan mengapa aset tidak disertakan.
+!assets/avatar/README.md
+
+# ==============================
+# Node.js
+# ==============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# PENTING: package-lock.json HARUS di-commit untuk mengunci versi dependensi.
+# Jangan tambahkan package-lock.json ke sini.
+
+# ==============================
+# Electron build output
+# ==============================
+dist/
+out/
+build/
+release/
+*.exe
+*.dmg
+*.AppImage
+
+# ==============================
+# OS-generated files
+# ==============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# Editor / IDE
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==============================
+# Logs & runtime data
+# ==============================
+logs/
+*.log
+.cache/
+
+# ==============================
+# Misc
+# ==============================
+*.local
