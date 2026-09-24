@@ -149,7 +149,7 @@ the OpenJS Foundation.
 
 For asset or rights inquiries, open an issue on this repository. For
 private matters, reach out via Instagram:
-[@agrion.virtual](https://instagram.com/agrion_virtual).
+[Agrion Virtual Project](https://instagram.com/agrion_virtual).
 
 ---
 
