@@ -32,7 +32,7 @@ Those items retain their own licenses and terms, described below.
 - **Conditions of use for the default model:** see the "Conditions of Use"
   panel on the model's VRoid Hub page. That panel is authoritative for
   that model.
-- **Placement instructions:** See [assets/README.md](assets/README.md).
+- **Placement instructions:** See [assets/README.md](../assets/README.md).
 
 ### Notes
 
