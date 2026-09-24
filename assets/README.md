@@ -2,7 +2,7 @@
 
 The `.vrm` avatar model and `.vrma` animation files used by this app are
 **not bundled in this repository**, per the licensing terms described in
-[docs/assets-and-credits.md](../../docs/assets-and-credits.md).
+[docs/assets-and-credits.md](../docs/assets-and-credits.md).
 
 To run this app, obtain the assets below and place them exactly as listed.
 Filenames must match — the app loads them by hardcoded path.
@@ -28,7 +28,7 @@ All `.vrma` files are from the
 [VRoid Project on BOOTH](https://booth.pm/en/items/5512385). They are free
 to use but **may not be redistributed**, which is why they are not bundled
 here. Commercial use requires a specific credit line — see
-[docs/assets-and-credits.md](../../docs/assets-and-credits.md).
+[docs/assets-and-credits.md](../docs/assets-and-credits.md).
 
 | File | Purpose |
 |---|---|
