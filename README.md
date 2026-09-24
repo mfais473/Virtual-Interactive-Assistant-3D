@@ -8,6 +8,7 @@ window.
 The app runs as a **transparent, frameless window** that can sit on top of
 your desktop. There are no on-screen buttons — everything is controlled by
 keyboard.
+![preview](assets/preview.png)
 
 ---
 
