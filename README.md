@@ -26,6 +26,14 @@ keyboard.
 - **Semantic gestures** — the LLM can trigger body animations by meaning
   (e.g. `[gesture:pengenalan]`), mapped to `.vrma` files through a central
   registry. Adding a new gesture requires editing only one place.
+- **Tool calling** *(new in update v0.1)* — the LLM can invoke local tools via inline tags like
+  `[tool:open_browser|https://google.com]`. Available tools:
+  - `open_browser` — open a URL in the default browser
+  - `screenshot` — capture the screen to a PNG
+  - `view_screenshot` — let the LLM analyze the last screenshot
+  - `find_files` — search files by name or pattern
+  - `read_pdf` — read a PDF from a known path
+  - `pdf_pick_and_read` — pick a PDF via dialog, then read it
 - **Two camera modes** — full-body and half-body (upper body close-up for
   conversation).
 - **Procedural idle motion** — subtle breathing, head sway, and periodic
