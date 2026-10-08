@@ -1,6 +1,3 @@
-# ==============================
-# Environment & secrets
-# ==============================
 .env
 .env.local
 .env.*.local
@@ -9,11 +6,8 @@
 # Avatar & animation assets
 # (tidak diredistribusikan — lihat assets/avatar/README.md)
 # ==============================
-# Abaikan semua file model di folder ini...
 assets/*.vrm
 assets/*.vrma
-
-# ...kecuali file README yang menjelaskan mengapa aset tidak disertakan.
 !assets/avatar/README.md
 
 # ==============================
