@@ -15,7 +15,8 @@ The Apache 2.0 license covers **only the code written for this project**.
 It does **not** cover:
 
 - Third-party assets (VRM model, `.vrma` animation files)
-- Third-party services (Google Gemini API, and any other external API)
+- Third-party services (Google Gemini API, ElevenLabs API, and any other
+  external API)
 - Third-party libraries (Three.js, `@pixiv/three-vrm`, Electron, and other
   npm dependencies — each carries its own license in `node_modules/`)
 
@@ -116,6 +117,38 @@ defers to the official terms for any legally binding detail.
 
 ---
 
+## ElevenLabs API
+
+This application uses the ElevenLabs API for speech-to-text (STT) and
+text-to-speech (TTS). Use of this service is governed by:
+
+- [ElevenLabs Terms of Service](https://elevenlabs.io/terms-of-use)
+- [ElevenLabs Privacy Policy](https://elevenlabs.io/privacy-policy)
+
+### Points to be aware of
+
+- **API keys:** Users must supply their own ElevenLabs API key via `.env`
+  (see `.env.example`). No key is bundled with this repository.
+- **Attribution requirement:** Content generated using the ElevenLabs
+  **Free Plan** must credit "elevenlabs.io" or "11.ai" in a clear and
+  visible location when published. This attribution is not required for
+  paid plans, which include a commercial license.
+- **Commercial use:** Commercial use of generated audio requires a paid
+  ElevenLabs subscription. The Free Plan is restricted to non-commercial
+  purposes, regardless of attribution.
+- **Voice cloning & consent:** If you configure this app to use cloned
+  voices, you are responsible for obtaining proper consent from the
+  voice owner and complying with ElevenLabs' voice cloning policies.
+- **Data usage:** Submitted text and audio may be processed by ElevenLabs
+  according to their privacy policy. Refer to their terms for the current
+  scope of data usage before deploying this app for others.
+
+The terms linked above are the authoritative source. They may change over
+time; this document intentionally summarizes only high-level points and
+defers to the official terms for any legally binding detail.
+
+---
+
 ## Bundled npm Dependencies
 
 This project uses the following open-source libraries (see `package.json`
@@ -149,8 +182,8 @@ the OpenJS Foundation.
 
 For asset or rights inquiries, open an issue on this repository. For
 private matters, reach out via Instagram:
-[Agrion Virtual Project](https://instagram.com/agrion_virtual).
+[INFERONS Virtual Project](https://www.instagram.com/inferons.id/).
 
 ---
 
-*Last updated: 2026-09-23*
+*Last updated: 2026-10-15*
