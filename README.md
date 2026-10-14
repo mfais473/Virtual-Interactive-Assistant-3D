@@ -116,26 +116,6 @@ button) to move it around your desktop.
 
 ---
 
-## How it works (brief)
-
-1. **Record** — pressing `R` starts capturing audio from your default mic
-   via `MediaRecorder`.
-2. **Send to Gemini** — the audio is sent to the Electron main process
-   (via IPC, so the API key never touches the renderer) and forwarded to
-   Gemini for:
-   - Speech-to-text
-   - Response generation (with a system prompt that enforces an
-     emotion/gesture tag format)
-   - Text-to-speech synthesis
-3. **Parse tags** — the main process extracts emotion and gesture tags
-   from the reply, then strips them so the TTS only speaks the clean text.
-4. **Playback + animation** — the renderer plays the returned audio while:
-   - Driving lipsync from live audio volume
-   - Applying the emotion as a VRM facial expression
-   - Playing any triggered gesture animation
-5. **Return to idle** — when the audio ends, the avatar crossfades back
-   to the idle pose and neutral expression.
-
 ### Project structure
 
 ```
