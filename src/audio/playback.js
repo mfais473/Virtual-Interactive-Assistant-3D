@@ -8,7 +8,8 @@ import {
 } from '../avatar/animationState.js';
 
 export function playReply(result) {
-  const replyAudio = new Audio('data:audio/wav;base64,' + result.audioBase64);
+  const mimeType = result.audioMimeType || 'audio/mpeg';
+  const replyAudio = new Audio(`data:${mimeType};base64,${result.audioBase64}`);
 
   setupLipSync(replyAudio);
 

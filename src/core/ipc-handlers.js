@@ -3,9 +3,10 @@ const { genAI } = require('../ai/gemini-client');
 const { SYSTEM_PROMPT } = require('../ai/prompt-builder');
 const { parseActions } = require('../parser/tag-parser');
 const { checkGestureEmotionConsistency } = require('../validators/gesture-consistency');
-const { pcmToWavBase64 } = require('../audio/pcm-to-wav');
 const { resizeWindow } = require('./window');
 const { executeToolActions } = require('../tools');
+const { transcribeAudio, base64ToBuffer } = require('../ai/elevenlabs-stt');
+const { synthesizeSpeech } = require('../ai/elevenlabs-tts');
 
 function mergeActions(original, parsed) {
   for (const a of parsed) {
@@ -21,20 +22,33 @@ function mergeActions(original, parsed) {
 }
 
 function registerIpcHandlers() {
-  ipcMain.on('app-quit', () => {
-    app.quit();
-  });
-
-  ipcMain.on('resize-window', (event, direction) => {
-    resizeWindow(direction);
-  });
+  ipcMain.on('app-quit', () => app.quit());
+  ipcMain.on('resize-window', (event, direction) => resizeWindow(direction));
 
   ipcMain.handle('process-turn', async (event, { audioBase64, mimeType }) => {
     try {
-      // 1) Audio → teks + tag actions
+      // ─────────────────────────────────────────────
+      // 1) STT: Audio → Teks (ElevenLabs Scribe)
+      // ─────────────────────────────────────────────
+      const audioBuffer = base64ToBuffer(audioBase64);
+      const sttResult = await transcribeAudio(audioBuffer, {
+        fileName: 'user-input.wav',
+        mimeType: mimeType || 'audio/wav',
+        languageCode: 'ind', // sesuaikan
+      });
+      const userText = sttResult.text.trim();
+
+      if (!userText) {
+        console.warn('[process-turn] STT menghasilkan teks kosong.');
+      }
+
+      // ─────────────────────────────────────────────
+      // 2) Gemini #1: Teks → Teks + Actions
+      //    (Input sekarang TEKS, bukan audio — hemat token!)
+      // ─────────────────────────────────────────────
       const understandResponse = await genAI.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: [{ inlineData: { mimeType, data: audioBase64 } }],
+        model: 'gemini-3.5-flash-lite',
+        contents: [{ parts: [{ text: userText }] }], // 👈 teks saja
         config: { systemInstruction: SYSTEM_PROMPT },
       });
       const rawReplyText = understandResponse.text;
@@ -42,10 +56,11 @@ function registerIpcHandlers() {
       const { actions, cleanText } = parseActions(rawReplyText);
       checkGestureEmotionConsistency(actions);
 
-      // 2) Jalankan tool
+      // ─────────────────────────────────────────────
+      // 3) Eksekusi tool
+      // ─────────────────────────────────────────────
       const toolResults = await executeToolActions(actions);
 
-      // 3) Klasifikasi hasil tool
       const imageResults = toolResults.filter((r) => r.success && r.imageBase64);
       const textResults  = toolResults.filter((r) => r.success && r.text);
       const errorResults = toolResults.filter((r) => !r.success);
@@ -61,7 +76,9 @@ function registerIpcHandlers() {
 
       let finalText = cleanText;
 
-      // 4) Kalau ada hasil tool, panggil Gemini kedua untuk komentar/analisis
+      // ─────────────────────────────────────────────
+      // 4) Gemini #2: Follow-up (jika ada hasil tool)
+      // ─────────────────────────────────────────────
       if (hasAnyResult) {
         const parts = [];
 
@@ -99,28 +116,23 @@ function registerIpcHandlers() {
         mergeActions(actions, parsed.actions);
       }
 
-      // 5) TTS
-      const ttsResponse = await genAI.models.generateContent({
-        model: 'gemini-3.1-flash-tts-preview',
-        contents: [{ parts: [{ text: finalText }] }],
-        config: {
-          responseModalities: ['AUDIO'],
-          speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Aoede' } },
-          },
-        },
-      });
-
-      const rawAudioBase64 = ttsResponse.candidates[0].content.parts[0].inlineData.data;
-      const wavAudioBase64 = pcmToWavBase64(rawAudioBase64);
+      // ─────────────────────────────────────────────
+      // 5) TTS: Teks → Audio (ElevenLabs)
+      // ─────────────────────────────────────────────
+      const { audioBase64: ttsAudioBase64, mimeType: ttsMimeType } =
+        await synthesizeSpeech(finalText, {
+          // voiceId: 'xxx',  // override kalau perlu
+        });
 
       return {
         text: finalText,
-        audioBase64: wavAudioBase64,
+        userText,                       // ✨ bonus: transkrip user (berguna untuk history)
+        audioBase64: ttsAudioBase64,
+        audioMimeType: ttsMimeType,     // ✨ mimeType baru
         actions,
       };
     } catch (error) {
-      console.error('Terjadi error saat memproses audio di Gemini:', error);
+      console.error('Error saat memproses turn:', error);
       throw error;
     }
   });

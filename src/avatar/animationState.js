@@ -4,20 +4,22 @@ import { loadVrmaClip } from './animationLoader.js';
 import { setCameraMode } from '../core/cameraRig.js';
 
 export function initAnimationSystem(vrm) {
+  // ✅ POIN #1: mixer dibuat di sini, SEKALI saja
   state.mixer = new THREE.AnimationMixer(vrm.scene);
   setupGestureFinishedListener();
   loadIdleAnimation(vrm);
 }
 
 function loadIdleAnimation(vrm) {
+  // ✅ POIN #3: idle pakai LoopRepeat, bukan LoopOnce
   loadVrmaClip('./assets/idle-full.vrma', vrm, (action) => {
     state.animations.full.idle = action;
     if (state.currentMode === 'full') action.play();
-  }, undefined, THREE.LoopOnce);
+  }, undefined, THREE.LoopRepeat);
 
   loadVrmaClip('./assets/idle-half.vrma', vrm, (action) => {
     state.animations.half.idle = action;
-  }, undefined, THREE.LoopOnce);
+  }, undefined, THREE.LoopRepeat);
 
   [1, 2, 3].forEach((n) => {
     loadVrmaClip(`./assets/gesture-${n}.vrma`, vrm, (action) => {
@@ -47,10 +49,9 @@ function setupGestureFinishedListener() {
 
     const idle = currentSlot().idle;
     if (idle) {
-      const clipDuration = idle.getClip().duration;
-      idle.enabled = true;
-      idle.paused = false;
-      idle.time = Math.max(0, clipDuration - 0.05);
+      // ✅ POIN #5: idle sekarang loop, jadi cukup reset + play + crossfade
+      idle.reset();
+      idle.play();
       idle.crossFadeFrom(e.action, 0.9, false);
     }
   });
@@ -72,11 +73,14 @@ export function switchMode(newMode) {
   const newAction = currentSlot().idle;
 
   if (oldAction && newAction) {
+    // ✅ POIN #4: reset dulu sebelum play + crossfade
+    newAction.reset();
     newAction.paused = false;
     newAction.enabled = true;
     newAction.play();
     newAction.crossFadeFrom(oldAction, 0.3, false);
   } else if (newAction) {
+    newAction.reset();
     newAction.play();
   }
 

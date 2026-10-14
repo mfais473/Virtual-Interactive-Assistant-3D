@@ -9,7 +9,14 @@ import { state } from '../state.js';
 const animLoader = new GLTFLoader();
 animLoader.register((parser) => new VRMAnimationLoaderPlugin(parser));
 
-export function loadVrmaClip(path, vrm, onReady, trimSeconds, loopMode = THREE.LoopPingPong) {
+// ✅ POIN #2: default diubah dari LoopPingPong → LoopRepeat
+export function loadVrmaClip(path, vrm, onReady, trimSeconds, loopMode = THREE.LoopRepeat) {
+  // ✅ POIN #1: mixer HARUS sudah ada, jangan bikin baru di sini
+  if (!state.mixer) {
+    console.error('Mixer belum diinisialisasi. Panggil initAnimationSystem() dulu.');
+    return;
+  }
+
   animLoader.load(
     path,
     (gltf) => {
@@ -32,14 +39,15 @@ export function loadVrmaClip(path, vrm, onReady, trimSeconds, loopMode = THREE.L
         );
       }
 
-      if (!state.mixer) state.mixer = new THREE.AnimationMixer(vrm.scene);
+      // ✅ POIN #1: pakai mixer yang sudah ada, JANGAN bikin baru
       const action = state.mixer.clipAction(clip);
 
       if (loopMode === THREE.LoopOnce) {
         action.setLoop(THREE.LoopOnce, 1);
         action.clampWhenFinished = true;
       } else {
-        action.setLoop(THREE.LoopPingPong, Infinity);
+        // ✅ POIN #2: LoopRepeat, bukan LoopPingPong
+        action.setLoop(THREE.LoopRepeat, Infinity);
       }
 
       onReady(action);
