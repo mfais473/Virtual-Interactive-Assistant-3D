@@ -116,37 +116,6 @@ button) to move it around your desktop.
 
 ---
 
-### Project structure
-
-```
-src/
-├── renderer.js              # Entry point (thin)
-├── app.js                   # Orchestrator + animation loop
-├── state.js                 # Shared state store
-├── core/
-│   ├── scene.js             # Three.js scene, renderer, lights
-│   └── cameraRig.js         # Camera modes + smooth transitions
-├── avatar/
-│   ├── vrm.js               # VRM loading
-│   ├── animationLoader.js   # Generic .vrma loader
-│   ├── animationState.js    # Idle / gesture / talking state
-│   ├── actionDispatcher.js  # Routes LLM actions to handlers
-│   ├── expressions.js       # Facial expression presets
-│   ├── lipsync.js           # Audio analysis → mouth blendshape
-│   └── procedural.js        # Breathing, head sway, blinking
-├── audio/
-│   ├── recorder.js          # Mic capture + MediaRecorder
-│   └── playback.js          # Reply playback + dispatch
-└── input/
-    └── keyboard.js          # Key bindings
-
-main.js                      # Electron main process + Gemini client
-preload.js                   # Secure IPC bridge
-index.html                   # Renderer entry + importmap
-```
-
----
-
 ## Troubleshooting
 
 ### Avatar doesn't appear
@@ -200,6 +169,7 @@ files. You must supply your own — see [assets/README.md](assets/README.md).
 
 - Voice, response, and speech synthesis powered by
   [Google Gemini API](https://ai.google.dev/).
+- **Speech-to-Text and Text-to-Speech services powered by [ElevenLabs](https://elevenlabs.io/).**
 - Avatar rendering via [Three.js](https://threejs.org/) and
   [`@pixiv/three-vrm`](https://github.com/pixiv/three-vrm).
 - Animation files sourced from the
