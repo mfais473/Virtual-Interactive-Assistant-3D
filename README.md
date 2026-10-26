@@ -9,8 +9,13 @@ The app runs as a **transparent, frameless window** that can sit on top of
 your desktop. There are no on-screen buttons — everything is controlled by
 keyboard.
 
-![preview](assets/preview.png)
+![VIA-3D preview](assets/preview.jpeg)
 
+*The avatar window in action.*
+
+![VIA-3D demo](assets/preview.gif)
+
+*Live demo: voice reply, lipsync, and body gestures.*
 ---
 
 ## Features
@@ -26,18 +31,18 @@ keyboard.
 - **Semantic gestures** — the LLM can trigger body animations by meaning
   (e.g. `[gesture:pengenalan]`), mapped to `.vrma` files through a central
   registry. Adding a new gesture requires editing only one place.
-- **Tool calling** *(new in update v0.1)* — the LLM can invoke local tools via inline tags like
-  `[tool:open_browser|https://google.com]`. Available tools:
-  - `open_browser` — open a URL in the default browser
-  - `screenshot` — capture the screen to a PNG
-  - `view_screenshot` — let the LLM analyze the last screenshot
-  - `find_files` — search files by name or pattern
-  - `read_pdf` — read a PDF from a known path
-  - `pdf_pick_and_read` — pick a PDF via dialog, then read it
-- **Two camera modes** — full-body and half-body (upper body close-up for
-  conversation).
-- **Procedural idle motion** — subtle breathing, head sway, and periodic
-  blinking, layered on top of the base `.vrma` pose.
+- **Tool calling & agent skills** — the LLM can invoke local tools via
+  inline tags like `[tool:open_browser|https://google.com]`, and in
+  v0.3.0 the agent can also plan multi-step tasks. Available tools:
+  - **Core tools:** `open_browser`, `screenshot`, `view_screenshot`,
+    `find_files`, `read_pdf`, `pdf_pick_and_read`
+  - **File & workspace:** `read_excel`, `create_excel`, `project_list`,
+    `project_read_file`, `project_write_file`, `project_edit_file`,
+    `project_propose_plan`, `apply_patch`
+  - **Agent loop:** `reason` (internal reasoning step)
+- **Agent skills** *(new in v0.3.0)* — the assistant can read PDF and
+  Excel files, and perform "vibe coding" by proposing and applying code
+  patches to your workspace through a plan-and-confirm loop.
 
 ---
 
@@ -82,11 +87,17 @@ placement. The app expects:
 ```
 assets/
 ├── avatar.vrm
+├── poses/
+│    ├── bow.vrma
+│    ├── nod.vrma
+│    ├── greeting.vrma
+│    └── ... (see src/avatar/poses.json for the full list)
 ├── idle-full.vrma
 ├── idle-half.vrma
 ├── gesture-1.vrma
 ├── gesture-2.vrma
-└── gesture-3.vrma
+├── gesture-3.vrma
+└── gesture-4.vrma
 ```
 
 ### 4. Run the app
@@ -110,6 +121,7 @@ automatically for console logs — useful for debugging.
 | `+` / `=` | Enlarge window |
 | `-` / `_` | Shrink window |
 | `Esc` | Quit application |
+| `Y` / `N` | Confirm / reject the agent's proposed plan |
 
 The window is draggable — click and hold on any empty area (not on a
 button) to move it around your desktop.

@@ -52,9 +52,7 @@ Those items retain their own licenses and terms, described below.
 
 - **Source:** [VRoid Project on BOOTH](https://booth.pm/en/items/5512385)
 - **Status in this repo:** NOT included. The app loads these files from
-  `assets/avatar/` at runtime; they are excluded via `.gitignore`.
-
-### Terms summary
+  `assets/avatar/` and `assets/poses/` at runtime; they are excluded via `.gitignore`.
 
 - **Copyright:** pixiv Inc. — remains theirs even after modification.
 - **Redistribution of the raw motion data is prohibited.** This
