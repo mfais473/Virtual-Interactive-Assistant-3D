@@ -1,3 +1,5 @@
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+
 const { app, BrowserWindow, session } = require('electron');
 
 const { createWindow } = require('./src/core/window');

@@ -12,7 +12,6 @@ export const CAMERA_CONFIGS = {
   },
 };
 
-// Target transisi
 let targetPos;
 let targetLookAt;
 let lookAtCurrent;
@@ -24,14 +23,11 @@ export function initCamera() {
     0.1,
     20
   );
-
   camera.position.copy(CAMERA_CONFIGS.full.position);
   camera.lookAt(CAMERA_CONFIGS.full.lookAt);
-
   targetPos = camera.position.clone();
   targetLookAt = CAMERA_CONFIGS.full.lookAt.clone();
   lookAtCurrent = CAMERA_CONFIGS.full.lookAt.clone();
-
   state.camera = camera;
   return camera;
 }

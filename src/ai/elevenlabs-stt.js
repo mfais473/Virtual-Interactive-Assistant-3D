@@ -49,7 +49,6 @@ async function transcribeAudio(audioBuffer, options = {}) {
     method: 'POST',
     headers: {
       'xi-api-key': ELEVENLABS_STT_API_KEY,
-      // JANGAN set Content-Type — biar fetch yang set boundary
     },
     body: formData,
   });

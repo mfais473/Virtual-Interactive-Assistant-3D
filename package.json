@@ -4,19 +4,22 @@
   "description": "Desktop VRM avatar assistant with Gemini voice interaction.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\""
   },
   "dependencies": {
     "@google/genai": "^0.14.0",
-    "@pixiv/three-vrm": "^2.1.2",
-    "@pixiv/three-vrm-animation": "^2.1.2",
+    "@pixiv/three-vrm": "^3.5.5",
+    "@pixiv/three-vrm-animation": "^3.5.5",
     "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
     "fast-glob": "^3.3.3",
+    "openai": "^7.39.0",
     "screenshot-desktop": "^1.15.6",
     "three": "^0.164.1",
     "unpdf": "^1.8.1"
   },
   "devDependencies": {
-    "electron": "^30.0.0"
+    "electron": "^45.0.0"
   }
 }

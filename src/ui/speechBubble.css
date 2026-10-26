@@ -1,0 +1,294 @@
+/* Bubble ucapan Via -- gaya idol virtual: putih-pink lembut, border gradien,
+   aksen berubah mengikuti ekspresi wajah (--accent / --accent2 di-set dari JS).
+   Semua ukuran dikali --ui supaya ikut mengecil/membesar saat window di-resize (+/-). */
+
+#via-bubble-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+  --ui: 1;
+  --accent: #ff7eb6;
+  --accent2: #b79cff;
+  --ink: #4a3558;
+  --ink-soft: #8a7499;
+}
+
+.via-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  width: calc(300px * var(--ui));
+  padding: calc(22px * var(--ui)) calc(18px * var(--ui)) calc(14px * var(--ui));
+  border-radius: calc(22px * var(--ui));
+  color: var(--ink);
+  font-family: 'Nunito', 'Quicksand', 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+  font-size: calc(15px * var(--ui));
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(150deg, #fff7fb 0%, #fdf0ff 55%, #f1f0ff 100%);
+  border: calc(2px * var(--ui)) solid transparent;
+  background-clip: padding-box;
+  box-shadow:
+    0 calc(10px * var(--ui)) calc(28px * var(--ui)) color-mix(in srgb, var(--accent) 30%, transparent),
+    0 calc(2px * var(--ui)) calc(6px * var(--ui)) rgba(74, 53, 88, 0.14),
+    inset 0 calc(1px * var(--ui)) 0 rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transform-origin: var(--tail-x, 50%) var(--tail-y, 50%);
+  will-change: transform, opacity;
+  transition: opacity 0.22s ease;
+}
+
+/* Border gradien (pink -> lavender) lewat pseudo-element bertopeng */
+.via-bubble::before {
+  content: '';
+  position: absolute;
+  inset: calc(-2px * var(--ui));
+  border-radius: inherit;
+  padding: calc(2px * var(--ui));
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+.via-bubble.is-visible { opacity: 1; }
+
+.via-bubble.is-in {
+  animation: via-pop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.via-bubble.is-out {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+@keyframes via-pop {
+  0%   { scale: 0.55; opacity: 0; }
+  60%  { opacity: 1; }
+  100% { scale: 1; opacity: 1; }
+}
+
+/* ---------- Ekor bubble (menunjuk ke kepala Via) ---------- */
+.via-tail {
+  position: absolute;
+  width: calc(16px * var(--ui));
+  height: calc(16px * var(--ui));
+  background: #fbf1ff;
+  /* hanya dua sisi yang menuju ujung ekor yang diberi garis; sisi dalam menyatu dengan bubble */
+  border: 0 solid var(--accent);
+  border-right-width: calc(2px * var(--ui));
+  border-bottom-width: calc(2px * var(--ui));
+  border-radius: 0 0 calc(5px * var(--ui)) 0;
+  transition: border-color 0.5s ease;
+}
+.via-bubble[data-side='right'] .via-tail {   /* bubble di kanan avatar -> ekor di sisi kiri */
+  left: calc(-9px * var(--ui));
+  top: var(--tail-pos, 50%);
+  transform: translateY(-50%) rotate(135deg);
+}
+.via-bubble[data-side='left'] .via-tail {    /* bubble di kiri avatar -> ekor di sisi kanan */
+  right: calc(-9px * var(--ui));
+  top: var(--tail-pos, 50%);
+  transform: translateY(-50%) rotate(-45deg);
+}
+.via-bubble[data-side='top'] .via-tail {     /* fallback: bubble di atas kepala */
+  bottom: calc(-9px * var(--ui));
+  left: var(--tail-pos, 50%);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* ---------- Label nama + equalizer ---------- */
+.via-name {
+  position: absolute;
+  left: calc(14px * var(--ui));
+  top: calc(-13px * var(--ui));
+  display: flex;
+  align-items: center;
+  gap: calc(7px * var(--ui));
+  padding: calc(3px * var(--ui)) calc(11px * var(--ui)) calc(3px * var(--ui)) calc(9px * var(--ui));
+  border-radius: 999px;
+  color: #fff;
+  font-size: calc(11.5px * var(--ui));
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(120deg, var(--accent), var(--accent2));
+  box-shadow: 0 calc(3px * var(--ui)) calc(8px * var(--ui)) color-mix(in srgb, var(--accent) 45%, transparent);
+  text-shadow: 0 1px 2px rgba(74, 53, 88, 0.25);
+  transition: background 0.5s ease;
+}
+.via-name .via-star {
+  width: calc(11px * var(--ui));
+  height: calc(11px * var(--ui));
+  fill: #fff;
+  animation: via-twinkle 2.4s ease-in-out infinite;
+}
+.via-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(2px * var(--ui));
+  height: calc(11px * var(--ui));
+}
+.via-eq i {
+  display: block;
+  width: calc(2.5px * var(--ui));
+  height: 100%;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.95);
+  transform-origin: 50% 100%;
+  transform: scaleY(0.25);
+}
+
+@keyframes via-twinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50%      { transform: scale(0.7) rotate(25deg); opacity: 0.65; }
+}
+
+/* ---------- Teks ---------- */
+.via-text {
+  position: relative;
+  min-height: calc(1.5em * 2);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.via-text.is-swap { animation: via-swap 0.28s ease both; }
+@keyframes via-swap {
+  from { opacity: 0; transform: translateY(calc(6px * var(--ui))); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Kata muncul satu-satu sesuai suara: menyelinap naik sambil fade */
+.via-w {
+  display: inline-block;
+  white-space: pre-wrap;
+  opacity: 0;
+  transform: translateY(calc(5px * var(--ui)));
+  filter: blur(calc(2px * var(--ui)));
+  transition: opacity 0.2s ease, transform 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.3), filter 0.2s ease;
+}
+.via-w.on { opacity: 1; transform: none; filter: none; }
+
+/* Kursor kecil berdenyut di kata terakhir yang sedang diucapkan */
+.via-w.cur::after {
+  content: '';
+  display: inline-block;
+  width: calc(5px * var(--ui));
+  height: calc(5px * var(--ui));
+  margin-left: calc(4px * var(--ui));
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: middle;
+  animation: via-pulse 0.9s ease-in-out infinite;
+}
+@keyframes via-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(0.45); opacity: 0.4; }
+}
+
+/* ---------- Mode "berpikir" (tiga titik) ---------- */
+.via-thinking {
+  display: none;
+  align-items: center;
+  gap: calc(6px * var(--ui));
+  height: calc(1.5em * 1);
+}
+.via-thinking i {
+  width: calc(8px * var(--ui));
+  height: calc(8px * var(--ui));
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  animation: via-bounce 1.1s ease-in-out infinite;
+}
+.via-thinking i:nth-child(2) { animation-delay: 0.15s; }
+.via-thinking i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes via-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30%           { transform: translateY(calc(-6px * var(--ui))); opacity: 1; }
+}
+.via-bubble.is-thinking .via-thinking { display: flex; }
+.via-bubble.is-thinking .via-text,
+.via-bubble.is-thinking .via-footer { display: none; }
+.via-bubble.is-thinking { width: auto; min-width: 0; }
+
+/* ---------- Footer: indikator halaman + petunjuk tombol izin ---------- */
+.via-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(8px * var(--ui));
+  margin-top: calc(8px * var(--ui));
+  min-height: calc(8px * var(--ui));
+}
+.via-dots { display: flex; gap: calc(5px * var(--ui)); }
+.via-dots i {
+  width: calc(6px * var(--ui));
+  height: calc(6px * var(--ui));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent2) 35%, white);
+  transition: width 0.3s ease, background 0.3s ease;
+}
+.via-dots i.act {
+  width: calc(16px * var(--ui));
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.via-keys { display: none; gap: calc(6px * var(--ui)); margin-left: auto; }
+.via-bubble.is-asking .via-keys { display: flex; }
+.via-key {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4px * var(--ui));
+  padding: calc(2px * var(--ui)) calc(8px * var(--ui)) calc(2px * var(--ui)) calc(3px * var(--ui));
+  border-radius: 999px;
+  font-size: calc(11px * var(--ui));
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.85);
+  border: calc(1px * var(--ui)) solid color-mix(in srgb, var(--accent2) 40%, white);
+}
+.via-key b {
+  display: inline-grid;
+  place-items: center;
+  width: calc(17px * var(--ui));
+  height: calc(17px * var(--ui));
+  border-radius: calc(6px * var(--ui));
+  font-size: calc(10.5px * var(--ui));
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+
+/* ---------- Percikan kecil di sudut (hiasan) ---------- */
+.via-spark {
+  position: absolute;
+  right: calc(-7px * var(--ui));
+  top: calc(-9px * var(--ui));
+  width: calc(18px * var(--ui));
+  height: calc(18px * var(--ui));
+  fill: var(--accent);
+  filter: drop-shadow(0 0 calc(4px * var(--ui)) color-mix(in srgb, var(--accent) 60%, transparent));
+  animation: via-twinkle 2s ease-in-out infinite 0.4s;
+  transition: fill 0.5s ease;
+}
+
+/* ---------- Palet aksen per ekspresi (di-set lewat data-mood dari JS) ---------- */
+#via-bubble-layer[data-mood='happy']     { --accent: #ff7eb6; --accent2: #ffb36b; }
+#via-bubble-layer[data-mood='relaxed']   { --accent: #7fd6c2; --accent2: #8fb4ff; }
+#via-bubble-layer[data-mood='sad']       { --accent: #8fa8ff; --accent2: #b79cff; }
+#via-bubble-layer[data-mood='angry']     { --accent: #ff6b7a; --accent2: #ff9a6b; }
+#via-bubble-layer[data-mood='surprised'] { --accent: #ffcf4d; --accent2: #ff8fb8; }
+#via-bubble-layer[data-mood='neutral']   { --accent: #c58bff; --accent2: #7fb7ff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .via-bubble.is-in, .via-text.is-swap, .via-star, .via-spark,
+  .via-thinking i, .via-w.cur::after { animation: none; }
+  .via-w { transition: opacity 0.15s ease; transform: none; filter: none; }
+}

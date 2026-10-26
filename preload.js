@@ -5,6 +5,9 @@ contextBridge.exposeInMainWorld('api', {
   processTurn: (audioBase64, mimeType) =>
     ipcRenderer.invoke('process-turn', { audioBase64, mimeType }),
 
+  confirmShortcut: (decision) =>
+    ipcRenderer.invoke('confirm-shortcut', { decision }),
+
   quitApp: () => ipcRenderer.send('app-quit'),
 
   resizeWindow: (direction) => ipcRenderer.send('resize-window', direction),

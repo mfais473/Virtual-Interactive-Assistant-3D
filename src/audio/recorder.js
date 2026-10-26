@@ -1,5 +1,6 @@
 import { state } from '../state.js';
 import { resumeAudioContext } from '../avatar/lipsync.js';
+import { showThinking, hideBubble } from '../ui/speechBubble.js';
 
 const micSelect = document.getElementById('micSelect');
 
@@ -65,17 +66,23 @@ export async function startRecording(onResult) {
     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
     console.log('Ukuran audio blob:', audioBlob.size, 'bytes');
     console.log('Memproses (Gemini)...');
+    showThinking();   // bubble tiga titik selama menunggu STT -> LLM -> TTS
 
     try {
       const arrayBuffer = await audioBlob.arrayBuffer();
       const base64Audio = arrayBufferToBase64(arrayBuffer);
 
       const result = await window.api.processTurn(base64Audio, 'audio/webm');
-      console.log('AI:', result.text);
-
-      if (onResult) onResult(result);
+      if (!result) {
+        console.warn('Tidak ada ucapan terdeteksi / balasan kosong.');
+        hideBubble();
+      } else {
+        console.log('AI:', result.text);
+        if (onResult) onResult(result);
+      }
     } catch (err) {
       console.error('Gagal memproses:', err.message);
+      hideBubble();
     }
 
     stream.getTracks().forEach((track) => track.stop());

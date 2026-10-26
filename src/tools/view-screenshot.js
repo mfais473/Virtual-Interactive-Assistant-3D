@@ -1,6 +1,5 @@
 const fs = require('fs/promises');
 const { getLastScreenshotPath } = require('./state-screenshot');
-
 const viewScreenshot = {
   name: 'view_screenshot',
   description:
@@ -8,10 +7,13 @@ const viewScreenshot = {
     'atau menjelaskan apa yang ada di dalamnya. Pakai HANYA saat pengguna minta ' +
     'analisis screenshot, tanya isinya, atau minta penjelasan tentang yang tampak.',
   params: {},
+  permission: 'confirm',  
+  untrusted: true,         
+  describe: () =>
+    'Boleh aku lihat screenshot terakhir? Gambarnya akan dikirim ke layanan AI untuk dianalisis.',
   execute: async () => {
     const p = getLastScreenshotPath();
     if (!p) return { success: false, error: 'Belum ada screenshot yang diambil' };
-
     try {
       const buffer = await fs.readFile(p);
       return {

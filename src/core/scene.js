@@ -3,20 +3,16 @@ import { state } from '../state.js';
 
 export function initScene() {
   const scene = new THREE.Scene();
-
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   document.body.appendChild(renderer.domElement);
-
   const light = new THREE.DirectionalLight(0xffffff, Math.PI);
   light.position.set(1, 1, 1).normalize();
   scene.add(light);
   scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-
   state.scene = scene;
   state.renderer = renderer;
-
   return scene;
 }
 

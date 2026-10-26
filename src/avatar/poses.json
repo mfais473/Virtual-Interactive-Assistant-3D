@@ -1,0 +1,98 @@
+{
+  "poses": {
+    "berpikir": {
+      "file": "think.vrma",
+      "desc": "sedang berpikir atau mempertimbangkan sesuatu",
+      "example": "Hmm, coba aku pikirin dulu ya...",
+      "hold": 3.5
+    },
+    "melambai": {
+      "file": "greeting.vrma",
+      "desc": "menyapa atau berpamitan",
+      "example": "Halo! Senang banget ketemu kamu lagi.",
+      "hold": 2.5
+    },
+    "prihatin": {
+      "file": "bowed_head.vrma",
+      "desc": "menjelaskan sesuatu atau mengarahkan perhatian ke satu hal",
+      "example": "Nah, coba lihat bagian yang ini ya.",
+      "hold": 3
+    },
+    "membungkuk": {
+      "file": "bow.vrma",
+      "desc": "membungkuk sopan sebagai tanda hormat atau terima kasih",
+      "example": "Terima kasih banyak atas bantuannya.",
+      "hold": 2
+    },
+    "mengangguk": {
+      "file": "nod.vrma",
+      "desc": "mengangguk tanda setuju atau mengerti",
+      "example": "Iya, aku paham maksud kamu.",
+      "hold": 1.5,
+      "filler": true
+    },
+    "menggeleng": {
+      "file": "shake_head.vrma",
+      "desc": "menggelengkan kepala tanda tidak atau menolak",
+      "example": "Sayangnya itu bukan cara yang tepat.",
+      "hold": 1.5
+    },
+    "mengangkat_bahu": {
+      "file": "shrug.vrma",
+      "desc": "mengangkat bahu tanda tidak tahu atau ragu",
+      "example": "Hmm, aku juga kurang yakin soal itu.",
+      "hold": 2
+    },
+    "menunduk_malu": {
+      "file": "shy_look_down.vrma",
+      "desc": "menunduk dan tersenyum malu",
+      "example": "Hehe, ah kamu bisa aja...",
+      "hold": 2.5
+    },
+    "melihat_ke_atas": {
+      "file": "look_up.vrma",
+      "desc": "mendongak ke atas seolah mencari ide atau mengingat",
+      "example": "Oh iya, tadi kamu bilang apa ya?",
+      "hold": 2.5,
+      "filler": true
+    },
+    "memiringkan_kepala": {
+      "file": "tilt_head.vrma",
+      "desc": "memiringkan kepala tanda penasaran atau bingung",
+      "example": "Loh, kok bisa gitu?",
+      "hold": 2,
+      "filler": true
+    },
+    "senang": {
+      "file": "happy.vrma",
+      "desc": "mengepalkan tangan karena senang",
+      "example": "aku sangat senang ini berhasil",
+      "hold": 3
+    },
+    "sedih": {
+      "file": "sad_slump.vrma",
+      "desc": "badan sedikit merosot dan kepala menunduk tanda sedih",
+      "example": "Aku ikut sedih dengar kabar itu...",
+      "hold": 3
+    },
+    "menjelaskan": {
+      "file": "explain_hands.vrma",
+      "desc": "membuka kedua tangan ke depan seolah menjelaskan",
+      "example": "Jadi begini caranya, pertama kamu...",
+      "hold": 2,
+      "filler": true
+    },
+    "menunjuk": {
+      "file": "point.vrma",
+      "desc": "menunjuk ke satu arah dengan telunjuk",
+      "example": "Itu dia yang aku maksud!",
+      "hold": 2
+    },
+    "melompat": {
+      "file": "happy_bounce.vrma",
+      "desc": "melompat karena terlalu senang",
+      "example": "yeay! aku sangat bahagia sekali hari ini",
+      "hold": 2
+    }
+  }
+}

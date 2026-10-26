@@ -2,16 +2,18 @@ import * as THREE from 'three';
 import { state } from '../state.js';
 import { loadVrmaClip } from './animationLoader.js';
 import { setCameraMode } from '../core/cameraRig.js';
+import { detachActivePose } from './poseScheduler.js';
 
 export function initAnimationSystem(vrm) {
-  // ✅ POIN #1: mixer dibuat di sini, SEKALI saja
   state.mixer = new THREE.AnimationMixer(vrm.scene);
+
+  state.activeGesture = null;
+
   setupGestureFinishedListener();
   loadIdleAnimation(vrm);
 }
 
 function loadIdleAnimation(vrm) {
-  // ✅ POIN #3: idle pakai LoopRepeat, bukan LoopOnce
   loadVrmaClip('./assets/idle-full.vrma', vrm, (action) => {
     state.animations.full.idle = action;
     if (state.currentMode === 'full') action.play();
@@ -21,9 +23,12 @@ function loadIdleAnimation(vrm) {
     state.animations.half.idle = action;
   }, undefined, THREE.LoopRepeat);
 
-  [1, 2, 3].forEach((n) => {
+  [1, 2, 3, 4].forEach((n) => {
     loadVrmaClip(`./assets/gesture-${n}.vrma`, vrm, (action) => {
       action.clampWhenFinished = true;
+
+      action.userData = { isGesture: true };
+
       state.gestureActions[n] = action;
     }, undefined, THREE.LoopOnce);
   });
@@ -37,22 +42,27 @@ export function playGesture(n) {
   const gesture = state.gestureActions[n];
   const idle = currentSlot().idle;
   if (!gesture || !idle) return;
-
+  const poseFrom = detachActivePose();
+  if (!poseFrom && !idle.isRunning()) {
+    idle.reset().play();
+  }
+  const from = poseFrom ?? (state.activeGesture?.isRunning() ? state.activeGesture : idle);
   gesture.reset().play();
-  gesture.crossFadeFrom(idle, 0.2, false);
+  gesture.crossFadeFrom(from, 0.2, false);
+  state.activeGesture = gesture;
 }
 
 function setupGestureFinishedListener() {
   state.mixer.addEventListener('finished', (e) => {
-    const isGestureAction = Object.values(state.gestureActions).includes(e.action);
-    if (!isGestureAction) return;
-
+    // 🔧 PERUBAHAN #4: cek via userData (O(1)) alih-alih Object.values (O(n))
+    if (!e.action.userData?.isGesture) return;
+    state.activeGesture = null;
     const idle = currentSlot().idle;
     if (idle) {
-      // ✅ POIN #5: idle sekarang loop, jadi cukup reset + play + crossfade
       idle.reset();
       idle.play();
-      idle.crossFadeFrom(e.action, 0.9, false);
+      const fadeDuration = Math.min(0.2, e.action.getClip().duration);
+      idle.crossFadeFrom(e.action, fadeDuration, false);
     }
   });
 }
@@ -67,13 +77,15 @@ export function playIdleAnimation() {
 
 export function switchMode(newMode) {
   if (newMode === state.currentMode) return;
-
-  const oldAction = currentSlot().idle;
+  Object.values(state.gestureActions).forEach((g) => {
+    if (g?.isRunning()) g.stop();
+  });
+  state.activeGesture = null;
+  const oldAction = detachActivePose() ?? currentSlot().idle;
   state.currentMode = newMode;
   const newAction = currentSlot().idle;
 
   if (oldAction && newAction) {
-    // ✅ POIN #4: reset dulu sebelum play + crossfade
     newAction.reset();
     newAction.paused = false;
     newAction.enabled = true;

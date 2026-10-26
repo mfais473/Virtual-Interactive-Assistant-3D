@@ -9,9 +9,7 @@ import { state } from '../state.js';
 const animLoader = new GLTFLoader();
 animLoader.register((parser) => new VRMAnimationLoaderPlugin(parser));
 
-// ✅ POIN #2: default diubah dari LoopPingPong → LoopRepeat
 export function loadVrmaClip(path, vrm, onReady, trimSeconds, loopMode = THREE.LoopRepeat) {
-  // ✅ POIN #1: mixer HARUS sudah ada, jangan bikin baru di sini
   if (!state.mixer) {
     console.error('Mixer belum diinisialisasi. Panggil initAnimationSystem() dulu.');
     return;
@@ -39,14 +37,12 @@ export function loadVrmaClip(path, vrm, onReady, trimSeconds, loopMode = THREE.L
         );
       }
 
-      // ✅ POIN #1: pakai mixer yang sudah ada, JANGAN bikin baru
       const action = state.mixer.clipAction(clip);
 
       if (loopMode === THREE.LoopOnce) {
         action.setLoop(THREE.LoopOnce, 1);
         action.clampWhenFinished = true;
       } else {
-        // ✅ POIN #2: LoopRepeat, bukan LoopPingPong
         action.setLoop(THREE.LoopRepeat, Infinity);
       }
 
@@ -61,4 +57,42 @@ export function loadVrmaClip(path, vrm, onReady, trimSeconds, loopMode = THREE.L
       console.error(`Gagal load animasi ${path}: file mungkin belum ada di assets/`, error);
     }
   );
+}
+
+export function loadVrmaAction(path, vrm) {
+  return new Promise((resolve) => {
+    if (!state.mixer) {
+      console.error('Mixer belum diinisialisasi. Panggil initAnimationSystem() dulu.');
+      resolve(null);
+      return;
+    }
+
+    animLoader.load(
+      path,
+      (gltf) => {
+        const vrmAnimation = gltf.userData.vrmAnimations?.[0];
+        if (!vrmAnimation) {
+          console.error(`File ${path} tidak berisi animasi yang valid.`);
+          resolve(null);
+          return;
+        }
+
+        vrmAnimation.expressionTracks.preset.clear();
+        vrmAnimation.expressionTracks.custom.clear();
+
+        const clip = createVRMAnimationClip(vrmAnimation, vrm);
+        const action = state.mixer.clipAction(clip);
+        action.setLoop(THREE.LoopOnce, 1);
+        action.clampWhenFinished = true;
+
+        console.log(`Pose dari ${path} berhasil dimuat. (${clip.duration.toFixed(2)} detik)`);
+        resolve(action);
+      },
+      undefined,
+      (error) => {
+        console.error(`Gagal load pose ${path}: file mungkin belum ada di assets/poses/`, error);
+        resolve(null);
+      }
+    );
+  });
 }

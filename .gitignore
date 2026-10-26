@@ -9,6 +9,7 @@
 assets/*.vrm
 assets/*.vrma
 !assets/avatar/README.md
+assets/poses/*.vrma
 
 # ==============================
 # Node.js
@@ -50,8 +51,3 @@ desktop.ini
 logs/
 *.log
 .cache/
-
-# ==============================
-# Misc
-# ==============================
-*.local

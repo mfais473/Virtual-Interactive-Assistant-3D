@@ -1,13 +1,20 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 const { GoogleGenAI } = require('@google/genai');
 
-if (!process.env.GEMINI_API_KEY) {
-  console.error(
-    'GEMINI_API_KEY tidak ditemukan! Pastikan file .env ada di folder yang ' +
-    'SAMA dengan package.json/main.js ini, dan berisi baris: GEMINI_API_KEY=key_anda'
-  );
+let _client = null;
+
+function getGeminiClient() {
+  if (_client) return _client;
+
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error(
+      'GEMINI_API_KEY tidak ditemukan! Pastikan .env ada di root project dan berisi: ' +
+      'GEMINI_API_KEY=key_anda'
+    );
+  }
+
+  _client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  return _client;
 }
 
-const genAI = new GoogleGenAI({ vertexai: false, apiKey: process.env.GEMINI_API_KEY });
-
-module.exports = { genAI };
+module.exports = { getGeminiClient };

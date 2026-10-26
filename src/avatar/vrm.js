@@ -5,8 +5,6 @@ import { state } from '../state.js';
 
 const loader = new GLTFLoader();
 loader.register((parser) => new VRMLoaderPlugin(parser));
-
-// ✅ Tinggi target untuk semua VRM (dalam meter)
 const TARGET_HEIGHT = 1.6;
 
 export function loadVRM(url) {
@@ -15,24 +13,16 @@ export function loadVRM(url) {
       url,
       (gltf) => {
         const vrm = gltf.userData.vrm;
-
-        // ⚠️ JANGAN panggil removeUnnecessaryJoints di sini.
-        // Panggil setelah semua animasi dimuat, kalau perlu.
-        // VRMUtils.removeUnnecessaryJoints(vrm.scene);
-
-        // VRM 0.x menghadap -Z; baris ini membalik supaya menghadap kamera.
         VRMUtils.rotateVRM0(vrm);
-
-        // ✅ NORMALISASI SKALA
-        // Hitung tinggi model saat ini, lalu sesuaikan agar = TARGET_HEIGHT
+        VRMUtils.removeUnnecessaryVertices(vrm.scene);
+        VRMUtils.combineSkeletons(vrm.scene);
+        VRMUtils.combineMorphs(vrm);
         const box = new THREE.Box3().setFromObject(vrm.scene);
         const currentHeight = box.max.y - box.min.y;
-
         if (currentHeight > 0) {
           const scaleFactor = TARGET_HEIGHT / currentHeight;
           vrm.scene.scale.setScalar(scaleFactor);
-
-          // Rekam tinggi setelah scaling
+          vrm.scene.position.y -= box.min.y * scaleFactor;
           console.log(
             `📏 Skala VRM: ${currentHeight.toFixed(3)}m → ${TARGET_HEIGHT}m ` +
             `(factor: ${scaleFactor.toFixed(3)})`
@@ -40,12 +30,6 @@ export function loadVRM(url) {
         } else {
           console.warn('⚠️ Tinggi VRM = 0, skip normalisasi skala.');
         }
-
-        // ✅ Pastikan kaki menyentuh lantai
-        // Setelah scaling, hitung ulang bounding box dan geser Y
-        const boxAfter = new THREE.Box3().setFromObject(vrm.scene);
-        vrm.scene.position.y -= boxAfter.min.y;
-
         state.vrm = vrm;
         console.log('VRM berhasil dimuat:', vrm);
         resolve(vrm);
