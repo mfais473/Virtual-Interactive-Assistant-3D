@@ -1,7 +1,7 @@
 # Virtual Interactive Assistant 3D (VIA-3D)
 
 A desktop VRM avatar assistant that listens to your voice, replies through
-the Google Gemini API, and reflects emotion through facial expressions and
+the LLM API, and reflects emotion through facial expressions and
 body gestures — all rendered in real time with Three.js inside an Electron
 window.
 
@@ -9,13 +9,14 @@ The app runs as a **transparent, frameless window** that can sit on top of
 your desktop. There are no on-screen buttons — everything is controlled by
 keyboard.
 
+*The avatar window in action.*
+
 ![VIA-3D preview](assets/preview.jpeg)
 
-*The avatar window in action.*
+*Live demo: voice reply, lipsync, and body gestures.*
 
 ![VIA-3D demo](assets/preview.gif)
 
-*Live demo: voice reply, lipsync, and body gestures.*
 ---
 
 ## Features
@@ -51,7 +52,7 @@ keyboard.
 - **Node.js** 18+ (`node -v` to check)
 - **A VRM avatar file** (`.vrm`) — see [assets/README.md](assets/README.md)
 - **`.vrma` animation files** — same README
-- **A Google Gemini API key** — https://aistudio.google.com/app/apikey
+- **A Google Gemini API key (or with another provider)** — https://aistudio.google.com/app/apikey (for gemini API key)
 
 ---
 
@@ -63,7 +64,7 @@ keyboard.
 npm install
 ```
 
-### 2. Configure your Gemini API key
+### 2. Configure your API key
 
 Copy `.env.example` to `.env` and fill in your key:
 
@@ -71,13 +72,7 @@ Copy `.env.example` to `.env` and fill in your key:
 cp .env.example .env
 ```
 
-Then edit `.env`:
-
-```
-GEMINI_API_KEY=your_key_here
-```
-
-The `.env` file is git-ignored and never leaves your machine.
+Then edit `.env`.
 
 ### 3. Provide the avatar and animation assets
 
@@ -125,44 +120,6 @@ automatically for console logs — useful for debugging.
 
 The window is draggable — click and hold on any empty area (not on a
 button) to move it around your desktop.
-
----
-
-## Troubleshooting
-
-### Avatar doesn't appear
-
-- Check DevTools console for errors from `src/avatar/vrm.js`.
-- The most common cause: the file isn't at `assets/avatar.vrm` or isn't
-  named exactly that.
-- If the screen is black, the camera might be positioned too far or too
-  close — adjust `CAMERA_CONFIGS` in `src/core/cameraRig.js`.
-
-### Avatar faces away from the camera
-
-This project calls `VRMUtils.rotateVRM0()` in `src/avatar/vrm.js`, which
-is only needed for **VRM 0.x** models (they face −Z by default). If you
-use a **VRM 1.0** model, comment out that line or the avatar will face
-the wrong way.
-
-### "GEMINI_API_KEY tidak ditemukan" on startup
-
-- Make sure `.env` exists in the **same folder as `package.json`**.
-- Make sure it contains a valid line: `GEMINI_API_KEY=...`
-- Restart the app after editing `.env` — it's read only at startup.
-
-### Mic indicator stays on after recording
-
-- The app stops the mic track as soon as recording ends. If the OS
-  indicator stays on, close the app and reopen — this is usually an OS
-  caching issue, not a bug in the app.
-
-### Voice reply plays but mouth doesn't move
-
-- Lipsync only runs in **half-body mode** by default (the face is too
-  small in full-body mode). Press `M` to switch.
-- Check that `speechConfig` in `main.js` is producing audio output —
-  if the TTS response is empty, there's nothing to analyze.
 
 ---
 
